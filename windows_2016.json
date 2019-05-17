@@ -1,0 +1,99 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "bundle_iso": true,
+      "headless": true,
+      "boot_wait": "2m",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "6h",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "guest_os_type": "Windows2016_64",
+      "disk_size": 61440,
+      "guest_additions_interface": "iso_interface",
+      "guest_additions_mode": "attach",
+      "guest_additions_sha256": "315d88e0211db6b5087848a6d12ecd32fb530f8b58f185100502626ef2e32e74",
+      "guest_additions_url": "../SQLServer2017-x64-ENU-Dev.iso",
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/openssh.ps1"
+      ],
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "4096"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "remote_path": "/tmp/script.bat",
+      "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
+      "scripts": [
+        "./scripts/vm-guest-tools.bat",
+        "./scripts/vagrant-ssh.bat",
+        "./scripts/enable-rdp.bat",
+        "./scripts/compile-dotnet-assemblies.bat",
+        "./scripts/compact.bat"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "../NDP472-DevPack-ENU.exe",
+      "destination": "C:/NDP472-DevPack-ENU.exe"
+    },
+    {
+      "type": "file",
+      "source": "../Git-2.21.0-64-bit.exe",
+      "destination": "C:/Git-2.21.0-64-bit.exe"
+    },
+    {
+      "type": "powershell",
+	    "scripts": [
+		    "./scripts/Aps/net.ps1",
+		    "./scripts/Aps/IIS.ps1",
+        	"./scripts/Aps/git.ps1",
+        	"./scripts/Aps/NetFramework_4.7.2.ps1"
+	    ]
+	  },
+	  {
+	    "type": "windows-shell",
+      "script": "./scripts/Aps/sql.cmd"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "./scripts/disable-auto-logon.bat"
+      ],
+      "pause_before": "2m"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": false,
+      "output": "windows_2016_{{.Provider}}.box",
+      "vagrantfile_template": "vagrantfile-windows_2016.template"
+    }
+  ],
+  "variables": {
+    "iso_url": "http://download.microsoft.com/download/1/4/9/149D5452-9B29-4274-B6B3-5361DBDA30BC/14393.0.161119-1705.RS1_REFRESH_SERVER_EVAL_X64FRE_EN-US.ISO",
+    "iso_checksum_type": "md5",
+    "iso_checksum": "70721288bbcdfe3239d8f8c0fae55f1f",
+    "autounattend": "./Autounattend.xml"
+  }
+}
