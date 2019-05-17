@@ -110,7 +110,7 @@ The Packer templates support the following variables:
 
 # GUID
 
-###All actions were performed on Windows Server 2016 x64.
+### All actions were performed on Windows Server 2016 x64.
 
 1. Install Git from the link `https://git-scm.com/`
 
@@ -118,15 +118,15 @@ The Packer templates support the following variables:
 `Set-ExecutionPolicy Bypass -Scope Process -Force; 
 iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))`
 
-4. Run command In PowerShell: 
+3. Run command In PowerShell: 
 
-4.1. `choko install packer` to install packer
+3.1. `choko install packer` to install packer
 
-4.2. `choco install virtualbox` to install virtualbox
+3.2. `choco install virtualbox` to install virtualbox
 
-4.3. `choco install vagrant` to install vagrant
+3.3. `choco install vagrant` to install vagrant
 
-Check compatibility virtualbox and packer choco upgrade virtualbox
+4. Check compatibility virtualbox and packer choco upgrade virtualbox
 
 5. Download this build using the command:
 `git clone https: //github.com/studentota2lvl? tab = repositories`
@@ -135,20 +135,20 @@ Check compatibility virtualbox and packer choco upgrade virtualbox
 7. Download NET Framework `NDP472-DevPack-ENU.exe` and move to the folder with SQLServer2017-x64-ENU-Dev.iso.
 8. Move `Git-2.21.0-64-bit.exe` to the folder with SQLServer2017-x64-ENU-Dev.iso.
 9. The directory structure should be as follows: 
-		├───app (synced folder for your app)
-		├───for_sql (synced folder for SQL database)
-		├───packer-windows
-		├───Git-2.21.0-64-bit.exe
-		├───NDP472-DevPack-ENU.exe
-		└───SQLServer2017-x64-ENU-Dev.iso
+		<br/>├───app (synced folder for your app)
+		<br/>├───for_sql (synced folder for SQL database)
+		<br/>├───packer-windows
+		<br/>├───Git-2.21.0-64-bit.exe
+		<br/>├───NDP472-DevPack-ENU.exe
+		<br/>└───SQLServer2017-x64-ENU-Dev.iso
 		
 10. From Windows PowerShell go to folder packer-windows and run command `packer build windows_2016.json`
 11. After the box is successfully created, you can edit the Vagrantfile to customisation the parameters of the virtual machine:
-	`config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true` - port forvarding.
-	`config.vm.synced_folder "../App/", "C:/App"` - synced folder.
-	`config.vm.provision "shell", path: "./scripts/Aps/CloningRepo.ps1"` - provision scripts.
-	`v.customize ["modifyvm", :id, "--memory", 4096]` - memory quantity.
-    `v.customize ["modifyvm", :id, "--cpus", 2]` - quantity of CPU.
+	<br/>`config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true` - port forvarding.
+	<br/>`config.vm.synced_folder "../App/", "C:/App"` - synced folder.
+	<br/>`config.vm.provision "shell", path: "./scripts/Aps/CloningRepo.ps1"` - provision scripts.
+	<br/>`v.customize ["modifyvm", :id, "--memory", 4096]` - memory quantity.
+    <br/>`v.customize ["modifyvm", :id, "--cpus", 2]` - quantity of CPU.
 
 12. After editing run in PowerShell command `vagrant up` from folder packer-windows
 
